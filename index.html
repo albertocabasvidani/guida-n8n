@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Variabili d'Ambiente n8n</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background: #fff;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #f6f8fa;
+            border-right: 1px solid #e1e4e8;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        .sidebar h1 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            color: #0366d6;
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category {
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #586069;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-left: 0.5rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #0366d6;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #e1e4e8;
+        }
+
+        .content {
+            margin-left: 300px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            overflow-y: auto;
+        }
+
+        .var-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .var-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e1e4e8;
+            color: #0366d6;
+        }
+
+        .var-item {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: #f6f8fa;
+            border-radius: 6px;
+            border-left: 3px solid #0366d6;
+            scroll-margin-top: 2rem;
+        }
+
+        .var-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            color: #24292e;
+        }
+
+        .var-item p {
+            margin-bottom: 0.75rem;
+        }
+
+        .var-item strong {
+            color: #0366d6;
+        }
+
+        .var-item code {
+            background: #fff;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            border: 1px solid #e1e4e8;
+        }
+
+        .var-item ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .var-item li {
+            margin-bottom: 0.5rem;
+        }
+
+        .warning {
+            color: #d73a49;
+            font-weight: 600;
+        }
+
+        .intro {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #fff8c5;
+            border-radius: 6px;
+            border-left: 4px solid #ffd33d;
+        }
+
+        .intro p {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .configs {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: #f6f8fa;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+
+        .configs h3 {
+            margin-bottom: 1rem;
+            color: #28a745;
+        }
+
+        .configs pre {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 3px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            border: 1px solid #e1e4e8;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h1>Guida n8n</h1>
+            <nav>
+                <div class="category">
+                    <div class="category-title">Generale</div>
+                    <div class="category-links">
+                        <a href="#n8n-host">N8N_HOST</a>
+                        <a href="#n8n-port">N8N_PORT</a>
+                        <a href="#n8n-protocol">N8N_PROTOCOL</a>
+                        <a href="#n8n-editor-base-url">N8N_EDITOR_BASE_URL</a>
+                        <a href="#n8n-path">N8N_PATH</a>
+                        <a href="#n8n-encryption-key">N8N_ENCRYPTION_KEY</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">HTTPS</div>
+                    <div class="category-links">
+                        <a href="#n8n-ssl-key">N8N_SSL_KEY</a>
+                        <a href="#n8n-ssl-cert">N8N_SSL_CERT</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Proxy</div>
+                    <div class="category-links">
+                        <a href="#http-proxy">HTTP_PROXY / HTTPS_PROXY</a>
+                        <a href="#n8n-proxy-hops">N8N_PROXY_HOPS</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Funzionalità</div>
+                    <div class="category-links">
+                        <a href="#n8n-disable-ui">N8N_DISABLE_UI</a>
+                        <a href="#n8n-templates-enabled">N8N_TEMPLATES_ENABLED</a>
+                        <a href="#n8n-version-notifications">N8N_VERSION_NOTIFICATIONS_ENABLED</a>
+                        <a href="#n8n-diagnostics">N8N_DIAGNOSTICS_ENABLED</a>
+                        <a href="#n8n-public-api">N8N_PUBLIC_API_DISABLED</a>
+                        <a href="#n8n-graceful-shutdown">N8N_GRACEFUL_SHUTDOWN_TIMEOUT</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Database</div>
+                    <div class="category-links">
+                        <a href="#db-type">DB_TYPE</a>
+                        <a href="#db-postgresdb-host">DB_POSTGRESDB_HOST</a>
+                        <a href="#db-postgresdb-port">DB_POSTGRESDB_PORT</a>
+                        <a href="#db-postgresdb-database">DB_POSTGRESDB_DATABASE</a>
+                        <a href="#db-postgresdb-user">DB_POSTGRESDB_USER</a>
+                        <a href="#db-postgresdb-password">DB_POSTGRESDB_PASSWORD</a>
+                        <a href="#db-postgresdb-pool-size">DB_POSTGRESDB_POOL_SIZE</a>
+                        <a href="#db-postgresdb-ssl">DB_POSTGRESDB_SSL_ENABLED</a>
+                        <a href="#db-sqlite-pool-size">DB_SQLITE_POOL_SIZE</a>
+                        <a href="#db-sqlite-vacuum">DB_SQLITE_VACUUM_ON_STARTUP</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Esecuzione</div>
+                    <div class="category-links">
+                        <a href="#executions-timeout">EXECUTIONS_TIMEOUT</a>
+                        <a href="#executions-timeout-max">EXECUTIONS_TIMEOUT_MAX</a>
+                        <a href="#executions-save-success">EXECUTIONS_DATA_SAVE_ON_SUCCESS</a>
+                        <a href="#executions-save-error">EXECUTIONS_DATA_SAVE_ON_ERROR</a>
+                        <a href="#executions-save-progress">EXECUTIONS_DATA_SAVE_ON_PROGRESS</a>
+                        <a href="#executions-prune">EXECUTIONS_DATA_PRUNE</a>
+                        <a href="#executions-max-age">EXECUTIONS_DATA_MAX_AGE</a>
+                        <a href="#executions-prune-max-count">EXECUTIONS_DATA_PRUNE_MAX_COUNT</a>
+                        <a href="#n8n-concurrency">N8N_CONCURRENCY_PRODUCTION_LIMIT</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Sicurezza</div>
+                    <div class="category-links">
+                        <a href="#block-file-access">N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES</a>
+                        <a href="#restrict-file-access">N8N_RESTRICT_FILE_ACCESS_TO</a>
+                        <a href="#block-env-access">N8N_BLOCK_ENV_ACCESS_IN_NODE</a>
+                        <a href="#enforce-settings-permissions">N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS</a>
+                        <a href="#secure-cookie">N8N_SECURE_COOKIE</a>
+                        <a href="#samesite-cookie">N8N_SAMESITE_COOKIE</a>
+                        <a href="#git-node-disable">N8N_GIT_NODE_DISABLE_BARE_REPOS</a>
+                        <a href="#security-audit-days">N8N_SECURITY_AUDIT_DAYS_ABANDONED_WORKFLOW</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Nodi</div>
+                    <div class="category-links">
+                        <a href="#community-packages">N8N_COMMUNITY_PACKAGES_ENABLED</a>
+                        <a href="#unverified-packages">N8N_UNVERIFIED_PACKAGES_ENABLED</a>
+                        <a href="#prevent-loading-packages">N8N_COMMUNITY_PACKAGES_PREVENT_LOADING</a>
+                        <a href="#python-enabled">N8N_PYTHON_ENABLED</a>
+                        <a href="#function-allow-builtin">NODE_FUNCTION_ALLOW_BUILTIN</a>
+                        <a href="#function-allow-external">NODE_FUNCTION_ALLOW_EXTERNAL</a>
+                        <a href="#nodes-exclude">NODES_EXCLUDE</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Limiti</div>
+                    <div class="category-links">
+                        <a href="#payload-size-max">N8N_PAYLOAD_SIZE_MAX</a>
+                        <a href="#formdata-file-size">N8N_FORMDATA_FILE_SIZE_MAX</a>
+                        <a href="#n8n-metrics">N8N_METRICS</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Workflow</div>
+                    <div class="category-links">
+                        <a href="#workflows-default-name">WORKFLOWS_DEFAULT_NAME</a>
+                        <a href="#workflow-activation-batch">N8N_WORKFLOW_ACTIVATION_BATCH_SIZE</a>
+                        <a href="#onboarding-disabled">N8N_ONBOARDING_FLOW_DISABLED</a>
+                        <a href="#workflow-caller-policy">N8N_WORKFLOW_CALLER_POLICY_DEFAULT_OPTION</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Enterprise</div>
+                    <div class="category-links">
+                        <a href="#license-activation-key">N8N_LICENSE_ACTIVATION_KEY</a>
+                        <a href="#license-auto-renew">N8N_LICENSE_AUTO_RENEW_ENABLED</a>
+                        <a href="#license-detach">N8N_LICENSE_DETACH_FLOATING_ON_SHUTDOWN</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Queue Mode</div>
+                    <div class="category-links">
+                        <a href="#executions-mode">EXECUTIONS_MODE</a>
+                        <a href="#redis-host">QUEUE_BULL_REDIS_HOST</a>
+                        <a href="#redis-port">QUEUE_BULL_REDIS_PORT</a>
+                        <a href="#redis-password">QUEUE_BULL_REDIS_PASSWORD</a>
+                        <a href="#offload-manual">OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS</a>
+                    </div>
+                </div>
+
+                <div class="category">
+                    <div class="category-title">Configurazioni</div>
+                    <div class="category-links">
+                        <a href="#config-examples">Esempi Configurazione</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="content">
+            <div class="intro">
+                <h1>Guida Variabili d'Ambiente n8n</h1>
+                <p>Questa guida spiega tutte le impostazioni che puoi configurare nel tuo server n8n. Ogni impostazione è spiegata in modo semplice, con consigli su quando usarla.</p>
+            </div>
+
+            <section id="generale" class="var-section">
+                <h2>1. Impostazioni Generali</h2>
+
+                <div id="n8n-host" class="var-item">
+                    <h3>N8N_HOST</h3>
+                    <p><strong>Cosa fa:</strong> L'indirizzo web dove gli utenti possono accedere a n8n</p>
+                    <p><strong>Default:</strong> localhost (solo dal tuo computer)</p>
+                    <p><strong>Esempio:</strong> <code>miosito.com</code></p>
+                    <p><strong>Quando cambiarlo:</strong> Sempre, se vuoi che altre persone possano usare n8n</p>
+                </div>
+
+                <div id="n8n-port" class="var-item">
+                    <h3>N8N_PORT</h3>
+                    <p><strong>Cosa fa:</strong> Il "cancello" attraverso cui n8n risponde</p>
+                    <p><strong>Default:</strong> 5678</p>
+                    <p><strong>Quando cambiarlo:</strong> Se hai già qualcos'altro che usa la porta 5678, scegli un numero diverso tipo 8080</p>
+                </div>
+
+                <div id="n8n-protocol" class="var-item">
+                    <h3>N8N_PROTOCOL</h3>
+                    <p><strong>Cosa fa:</strong> Se usare connessione normale (http) o sicura (https)</p>
+                    <p><strong>Valori:</strong> <code>http</code> o <code>https</code></p>
+                    <p><strong>Default:</strong> http</p>
+                    <p><strong>Consiglio:</strong> Usa <code>https</code> se hai dati importanti o se n8n è accessibile da internet</p>
+                </div>
+
+                <div id="n8n-editor-base-url" class="var-item">
+                    <h3>N8N_EDITOR_BASE_URL</h3>
+                    <p><strong>Cosa fa:</strong> L'indirizzo completo che n8n usa per mandare email o link agli utenti</p>
+                    <p><strong>Esempio:</strong> <code>https://miosito.com</code></p>
+                    <p><strong>Quando serve:</strong> Se usi la funzione di invito utenti o autenticazione esterna</p>
+                </div>
+
+                <div id="n8n-path" class="var-item">
+                    <h3>N8N_PATH</h3>
+                    <p><strong>Cosa fa:</strong> Se n8n non è all'indirizzo principale ma in una sottocartella</p>
+                    <p><strong>Default:</strong> <code>/</code> (indirizzo principale)</p>
+                    <p><strong>Esempio:</strong> <code>/n8n</code> se accedi con <code>miosito.com/n8n</code></p>
+                </div>
+
+                <div id="n8n-encryption-key" class="var-item">
+                    <h3>N8N_ENCRYPTION_KEY</h3>
+                    <p><strong>Cosa fa:</strong> Una password segreta per proteggere le credenziali salvate nel database</p>
+                    <p><strong>Default:</strong> n8n ne crea una automaticamente</p>
+                    <p><span class="warning">⚠️ Importante:</span> NON cambiarla dopo aver iniziato a usare n8n, altrimenti perdi tutte le password salvate</p>
+                </div>
+            </section>
+
+            <section id="https" class="var-section">
+                <h2>2. Sicurezza HTTPS</h2>
+
+                <div id="n8n-ssl-key" class="var-item">
+                    <h3>N8N_SSL_KEY</h3>
+                    <p><strong>Cosa fa:</strong> Il file della chiave privata per attivare la connessione sicura (https)</p>
+                    <p><strong>Quando serve:</strong> Se usi <code>N8N_PROTOCOL=https</code> e gestisci tu i certificati</p>
+                    <p><strong>Nota:</strong> Molti usano sistemi esterni (tipo Nginx o Traefik) per gestire https, quindi spesso questo non serve</p>
+                </div>
+
+                <div id="n8n-ssl-cert" class="var-item">
+                    <h3>N8N_SSL_CERT</h3>
+                    <p><strong>Cosa fa:</strong> Il file del certificato per attivare la connessione sicura (https)</p>
+                    <p><strong>Quando serve:</strong> Se usi <code>N8N_PROTOCOL=https</code> e gestisci tu i certificati</p>
+                    <p><strong>Nota:</strong> Molti usano sistemi esterni (tipo Nginx o Traefik) per gestire https, quindi spesso questo non serve</p>
+                </div>
+            </section>
+
+            <section id="proxy" class="var-section">
+                <h2>3. Proxy</h2>
+
+                <div id="http-proxy" class="var-item">
+                    <h3>HTTP_PROXY / HTTPS_PROXY</h3>
+                    <p><strong>Cosa fanno:</strong> Se il tuo server deve passare attraverso un "intermediario" per accedere a internet</p>
+                    <p><strong>Quando servono:</strong> Solo in reti aziendali che richiedono un proxy</p>
+                    <p><strong>Esempio:</strong> <code>http://proxy.aziendale.com:8080</code></p>
+                </div>
+
+                <div id="n8n-proxy-hops" class="var-item">
+                    <h3>N8N_PROXY_HOPS</h3>
+                    <p><strong>Cosa fa:</strong> Quanti "intermediari" ci sono tra gli utenti e n8n</p>
+                    <p><strong>Default:</strong> 0</p>
+                    <p><strong>Quando cambiarlo:</strong> Metti <code>1</code> se usi un reverse proxy (tipo Nginx, Traefik, Cloudflare)</p>
+                </div>
+            </section>
+
+            <section id="funzionalita" class="var-section">
+                <h2>4. Funzionalità Extra</h2>
+
+                <div id="n8n-disable-ui" class="var-item">
+                    <h3>N8N_DISABLE_UI</h3>
+                    <p><strong>Cosa fa:</strong> Disattiva completamente l'interfaccia grafica</p>
+                    <p><strong>Default:</strong> false (interfaccia attiva)</p>
+                    <p><strong>Quando usarlo:</strong> Mai, a meno che tu voglia usare n8n solo tramite API</p>
+                </div>
+
+                <div id="n8n-templates-enabled" class="var-item">
+                    <h3>N8N_TEMPLATES_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Permette di vedere e usare modelli di workflow già pronti</p>
+                    <p><strong>Default:</strong> false (disattivato)</p>
+                    <p><strong>Consiglio:</strong> Metti <code>true</code> per vedere esempi e velocizzare il lavoro</p>
+                </div>
+
+                <div id="n8n-version-notifications" class="var-item">
+                    <h3>N8N_VERSION_NOTIFICATIONS_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Ti avvisa quando c'è una nuova versione di n8n o problemi di sicurezza</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Consiglio:</strong> Lascia <code>true</code> per sapere quando aggiornare</p>
+                </div>
+
+                <div id="n8n-diagnostics" class="var-item">
+                    <h3>N8N_DIAGNOSTICS_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Invia statistiche anonime al team di n8n per migliorare il prodotto</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Nota:</strong> Se lo metti <code>false</code>, non potrai usare la funzione "Ask AI" nei nodi Code</p>
+                </div>
+
+                <div id="n8n-public-api" class="var-item">
+                    <h3>N8N_PUBLIC_API_DISABLED</h3>
+                    <p><strong>Cosa fa:</strong> Attiva/disattiva l'API per controllare n8n da programmi esterni</p>
+                    <p><strong>Default:</strong> false (API attiva)</p>
+                    <p><strong>Quando disattivarla:</strong> Se vuoi più sicurezza e non usi l'API</p>
+                </div>
+
+                <div id="n8n-graceful-shutdown" class="var-item">
+                    <h3>N8N_GRACEFUL_SHUTDOWN_TIMEOUT</h3>
+                    <p><strong>Cosa fa:</strong> Quanti secondi aspettare i workflow in corso prima di spegnere n8n</p>
+                    <p><strong>Default:</strong> 30 secondi</p>
+                    <p><strong>Quando aumentarlo:</strong></p>
+                    <ul>
+                        <li>Metti <code>60</code> se i tuoi workflow fanno operazioni importanti (pagamenti, scritture database)</li>
+                        <li>Metti <code>120</code> se i workflow durano più di 30 secondi</li>
+                    </ul>
+                    <p><strong>Perché serve:</strong> Evita di interrompere operazioni a metà quando riavvii n8n</p>
+                </div>
+            </section>
+
+            <section id="database" class="var-section">
+                <h2>5. Database</h2>
+
+                <div id="db-type" class="var-item">
+                    <h3>DB_TYPE</h3>
+                    <p><strong>Cosa fa:</strong> Sceglie dove salvare tutti i dati di n8n</p>
+                    <p><strong>Valori:</strong> <code>sqlite</code> o <code>postgresdb</code></p>
+                    <p><strong>Default:</strong> sqlite</p>
+                    <p><strong>Quale usare:</strong></p>
+                    <ul>
+                        <li><code>sqlite</code>: Va bene per test o uso personale (1 persona)</li>
+                        <li><code>postgresdb</code> (PostgreSQL): <strong>Obbligatorio</strong> per uso serio (più utenti, più workflow)</li>
+                    </ul>
+                </div>
+
+                <div id="db-postgresdb-host" class="var-item">
+                    <h3>DB_POSTGRESDB_HOST</h3>
+                    <p><strong>Cosa fa:</strong> Dove si trova il database PostgreSQL</p>
+                    <p><strong>Esempio:</strong> <code>localhost</code> (stesso computer) o <code>database.miosito.com</code></p>
+                </div>
+
+                <div id="db-postgresdb-port" class="var-item">
+                    <h3>DB_POSTGRESDB_PORT</h3>
+                    <p><strong>Cosa fa:</strong> La porta di PostgreSQL</p>
+                    <p><strong>Default:</strong> 5432</p>
+                </div>
+
+                <div id="db-postgresdb-database" class="var-item">
+                    <h3>DB_POSTGRESDB_DATABASE</h3>
+                    <p><strong>Cosa fa:</strong> Nome del database da usare</p>
+                    <p><strong>Default:</strong> n8n</p>
+                </div>
+
+                <div id="db-postgresdb-user" class="var-item">
+                    <h3>DB_POSTGRESDB_USER</h3>
+                    <p><strong>Cosa fa:</strong> Username per accedere al database</p>
+                    <p><span class="warning">⚠️ Importante:</span> Usa username sicuri!</p>
+                </div>
+
+                <div id="db-postgresdb-password" class="var-item">
+                    <h3>DB_POSTGRESDB_PASSWORD</h3>
+                    <p><strong>Cosa fa:</strong> Password per accedere al database</p>
+                    <p><span class="warning">⚠️ Importante:</span> Usa password complesse!</p>
+                </div>
+
+                <div id="db-postgresdb-pool-size" class="var-item">
+                    <h3>DB_POSTGRESDB_POOL_SIZE</h3>
+                    <p><strong>Cosa fa:</strong> Quanti "canali" di comunicazione tenere aperti con il database</p>
+                    <p><strong>Default:</strong> 2</p>
+                    <p><strong>Come sceglierlo:</strong></p>
+                    <ul>
+                        <li>Server con 2GB RAM o meno: lascia <code>2</code></li>
+                        <li>Server con 4GB RAM: usa <code>4</code></li>
+                        <li>Server con 8GB+ RAM e molti utenti: usa <code>6-8</code></li>
+                        <li><span class="warning">⚠️</span> Non esagerare: troppi rallentano invece di velocizzare</li>
+                    </ul>
+                </div>
+
+                <div id="db-postgresdb-ssl" class="var-item">
+                    <h3>DB_POSTGRESDB_SSL_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Usa connessione criptata al database</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Quando attivarlo:</strong> Se il database è su un server diverso o hai dati sensibili</p>
+                </div>
+
+                <div id="db-sqlite-pool-size" class="var-item">
+                    <h3>DB_SQLITE_POOL_SIZE</h3>
+                    <p><strong>Cosa fa:</strong> Attiva una modalità più veloce per leggere i dati</p>
+                    <p><strong>Default:</strong> 0 (modalità lenta)</p>
+                    <p><strong>Consiglio:</strong> Metti <code>4</code> per velocizzare (ma solo se usi n8n da solo, non per produzione seria)</p>
+                </div>
+
+                <div id="db-sqlite-vacuum" class="var-item">
+                    <h3>DB_SQLITE_VACUUM_ON_STARTUP</h3>
+                    <p><strong>Cosa fa:</strong> "Ripulisce" il database all'avvio per renderlo più piccolo e veloce</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><span class="warning">⚠️ Nota:</span> L'operazione può richiedere diversi minuti con database grandi</p>
+                </div>
+            </section>
+
+            <section id="esecuzione" class="var-section">
+                <h2>6. Esecuzione Workflow</h2>
+
+                <div id="executions-timeout" class="var-item">
+                    <h3>EXECUTIONS_TIMEOUT</h3>
+                    <p><strong>Cosa fa:</strong> Dopo quanti secondi fermare un workflow che sta impiegando troppo tempo</p>
+                    <p><strong>Default:</strong> -1 (nessun limite)</p>
+                    <p><strong>Come sceglierlo:</strong></p>
+                    <ul>
+                        <li>Workflow veloci (meno di 5 minuti): <code>300</code> (5 minuti)</li>
+                        <li>Workflow normali: <code>3600</code> (1 ora)</li>
+                        <li>Workflow lunghi (elaborazione file grandi, migliaia di email): <code>14400</code> (4 ore)</li>
+                    </ul>
+                    <p><strong>Perché serve:</strong> Evita che un workflow "impazzito" occupi il server per sempre</p>
+                </div>
+
+                <div id="executions-timeout-max" class="var-item">
+                    <h3>EXECUTIONS_TIMEOUT_MAX</h3>
+                    <p><strong>Cosa fa:</strong> Il tempo massimo che gli utenti possono impostare per un singolo workflow</p>
+                    <p><strong>Default:</strong> 3600 (1 ora)</p>
+                    <p><strong>Quando aumentarlo:</strong> Se hai workflow che legittimamente impiegano più di 1 ora</p>
+                </div>
+
+                <div id="executions-save-success" class="var-item">
+                    <h3>EXECUTIONS_DATA_SAVE_ON_SUCCESS</h3>
+                    <p><strong>Cosa fa:</strong> Salva i dati quando un workflow finisce bene</p>
+                    <p><strong>Valori:</strong> <code>all</code> (tutto) o <code>none</code> (niente)</p>
+                    <p><strong>Default:</strong> all</p>
+                    <p><strong>Consiglio:</strong></p>
+                    <ul>
+                        <li>Lascia <code>all</code> per vedere cosa ha fatto il workflow</li>
+                        <li>Usa <code>none</code> solo se hai pochissimo spazio su disco</li>
+                    </ul>
+                </div>
+
+                <div id="executions-save-error" class="var-item">
+                    <h3>EXECUTIONS_DATA_SAVE_ON_ERROR</h3>
+                    <p><strong>Cosa fa:</strong> Salva i dati quando un workflow va in errore</p>
+                    <p><strong>Default:</strong> all</p>
+                    <p><strong>Consiglio:</strong> Lascia sempre <code>all</code> per capire cosa è andato storto</p>
+                </div>
+
+                <div id="executions-save-progress" class="var-item">
+                    <h3>EXECUTIONS_DATA_SAVE_ON_PROGRESS</h3>
+                    <p><strong>Cosa fa:</strong> Salva ogni singolo passaggio del workflow mentre è in esecuzione</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Quando attivarlo:</strong></p>
+                    <ul>
+                        <li>Se hai workflow molto lunghi e vuoi vedere a che punto sono</li>
+                        <li><span class="warning">⚠️</span> Consuma più spazio e rallenta leggermente</li>
+                    </ul>
+                </div>
+
+                <div id="executions-prune" class="var-item">
+                    <h3>EXECUTIONS_DATA_PRUNE</h3>
+                    <p><strong>Cosa fa:</strong> Cancella automaticamente le vecchie esecuzioni per non riempire il disco</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Consiglio:</strong> <strong>Lascia sempre true</strong>, altrimenti il disco si riempie</p>
+                </div>
+
+                <div id="executions-max-age" class="var-item">
+                    <h3>EXECUTIONS_DATA_MAX_AGE</h3>
+                    <p><strong>Cosa fa:</strong> Dopo quante ore cancellare le vecchie esecuzioni</p>
+                    <p><strong>Default:</strong> 336 ore (14 giorni)</p>
+                    <p><strong>Come sceglierlo:</strong></p>
+                    <ul>
+                        <li>Disco piccolo (meno di 20GB liberi): <code>168</code> (7 giorni)</li>
+                        <li>Disco normale: <code>336</code> (14 giorni) o <code>720</code> (30 giorni)</li>
+                        <li>Disco grande (100GB+ liberi): <code>2160</code> (90 giorni)</li>
+                        <li>Server importante dove servono log storici: <code>4320</code> (6 mesi)</li>
+                    </ul>
+                </div>
+
+                <div id="executions-prune-max-count" class="var-item">
+                    <h3>EXECUTIONS_DATA_PRUNE_MAX_COUNT</h3>
+                    <p><strong>Cosa fa:</strong> Numero massimo di esecuzioni da tenere, anche se recenti</p>
+                    <p><strong>Default:</strong> 10000</p>
+                    <p><strong>Quando abbassarlo:</strong> Se hai poco spazio disco, metti <code>5000</code> o <code>2000</code></p>
+                </div>
+
+                <div id="n8n-concurrency" class="var-item">
+                    <h3>N8N_CONCURRENCY_PRODUCTION_LIMIT</h3>
+                    <p><strong>Cosa fa:</strong> Quanti workflow possono girare contemporaneamente</p>
+                    <p><strong>Default:</strong> -1 (nessun limite)</p>
+                    <p><strong>Come sceglierlo:</strong></p>
+                    <ul>
+                        <li>Server con 2GB RAM: <code>2</code></li>
+                        <li>Server con 4GB RAM: <code>5</code></li>
+                        <li>Server con 8GB+ RAM: <code>10-15</code></li>
+                    </ul>
+                    <p><strong>Perché serve:</strong> Evita che troppe esecuzioni rallentino tutto</p>
+                </div>
+            </section>
+
+            <section id="sicurezza" class="var-section">
+                <h2>7. Sicurezza</h2>
+
+                <div id="block-file-access" class="var-item">
+                    <h3>N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES</h3>
+                    <p><strong>Cosa fa:</strong> Impedisce ai workflow di leggere i file di configurazione di n8n</p>
+                    <p><strong>Default:</strong> true (accesso bloccato)</p>
+                    <p><strong>Consiglio:</strong> <strong>Lascia sempre true</strong> per sicurezza</p>
+                </div>
+
+                <div id="restrict-file-access" class="var-item">
+                    <h3>N8N_RESTRICT_FILE_ACCESS_TO</h3>
+                    <p><strong>Cosa fa:</strong> I workflow possono leggere file solo da queste cartelle</p>
+                    <p><strong>Default:</strong> nessuna limitazione</p>
+                    <p><strong>Esempio:</strong> <code>/home/user/documenti:/home/user/download</code></p>
+                    <p><strong>Quando usarlo:</strong> Se hai utenti non fidati che potrebbero leggere file sensibili</p>
+                </div>
+
+                <div id="block-env-access" class="var-item">
+                    <h3>N8N_BLOCK_ENV_ACCESS_IN_NODE</h3>
+                    <p><strong>Cosa fa:</strong> Impedisce ai workflow di leggere le impostazioni del server</p>
+                    <p><strong>Default:</strong> false (possono leggere)</p>
+                    <p><strong>Quando metterlo true:</strong> Se hai password o chiavi API nelle variabili d'ambiente e utenti non fidati</p>
+                </div>
+
+                <div id="enforce-settings-permissions" class="var-item">
+                    <h3>N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS</h3>
+                    <p><strong>Cosa fa:</strong> Assicura che i file di configurazione siano leggibili solo dal proprietario</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Consiglio:</strong> Metti <code>true</code> su server condivisi o importanti</p>
+                </div>
+
+                <div id="secure-cookie" class="var-item">
+                    <h3>N8N_SECURE_COOKIE</h3>
+                    <p><strong>Cosa fa:</strong> I cookie di login funzionano solo con connessione sicura (https)</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Consiglio:</strong> Lascia <code>true</code> se usi https</p>
+                </div>
+
+                <div id="samesite-cookie" class="var-item">
+                    <h3>N8N_SAMESITE_COOKIE</h3>
+                    <p><strong>Cosa fa:</strong> Controlla quando il browser invia i cookie</p>
+                    <p><strong>Valori:</strong> <code>strict</code>, <code>lax</code>, <code>none</code></p>
+                    <p><strong>Default:</strong> lax</p>
+                    <p><strong>Quale usare:</strong></p>
+                    <ul>
+                        <li><code>strict</code>: Massima sicurezza, ma alcuni link esterni potrebbero non funzionare</li>
+                        <li><code>lax</code>: Buon compromesso (lascia questo)</li>
+                        <li><code>none</code>: Solo se n8n è incorporato in altri siti</li>
+                    </ul>
+                </div>
+
+                <div id="git-node-disable" class="var-item">
+                    <h3>N8N_GIT_NODE_DISABLE_BARE_REPOS</h3>
+                    <p><strong>Cosa fa:</strong> Impedisce l'uso di repository Git "bare" che possono essere rischiosi</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Consiglio:</strong> Metti <code>true</code> se hai utenti non fidati</p>
+                </div>
+
+                <div id="security-audit-days" class="var-item">
+                    <h3>N8N_SECURITY_AUDIT_DAYS_ABANDONED_WORKFLOW</h3>
+                    <p><strong>Cosa fa:</strong> Dopo quanti giorni senza modifiche un workflow è considerato "abbandonato"</p>
+                    <p><strong>Default:</strong> 90 giorni</p>
+                    <p><strong>A cosa serve:</strong> Per sapere quali workflow nessuno usa più</p>
+                </div>
+            </section>
+
+            <section id="nodi" class="var-section">
+                <h2>8. Nodi</h2>
+
+                <div id="community-packages" class="var-item">
+                    <h3>N8N_COMMUNITY_PACKAGES_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Permette di installare nodi creati da altre persone</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Consiglio:</strong> Lascia <code>true</code> per avere più funzionalità, metti <code>false</code> per massima sicurezza</p>
+                </div>
+
+                <div id="unverified-packages" class="var-item">
+                    <h3>N8N_UNVERIFIED_PACKAGES_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Permette nodi non verificati dal team n8n</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Quando disattivarlo:</strong> Se usi n8n per dati aziendali sensibili</p>
+                </div>
+
+                <div id="prevent-loading-packages" class="var-item">
+                    <h3>N8N_COMMUNITY_PACKAGES_PREVENT_LOADING</h3>
+                    <p><strong>Cosa fa:</strong> Non carica i nodi community all'avvio</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Quando attivarlo:</strong> Se un nodo difettoso impedisce a n8n di avviarsi (situazione rara)</p>
+                </div>
+
+                <div id="python-enabled" class="var-item">
+                    <h3>N8N_PYTHON_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Permette di scrivere codice Python nei nodi Code</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Quando disattivarlo:</strong> Se vuoi che gli utenti usino solo JavaScript</p>
+                </div>
+
+                <div id="function-allow-builtin" class="var-item">
+                    <h3>NODE_FUNCTION_ALLOW_BUILTIN</h3>
+                    <p><strong>Cosa fa:</strong> Permette di usare funzioni avanzate di JavaScript/Python</p>
+                    <p><strong>Default:</strong> disabilitato</p>
+                    <p><strong>Esempio:</strong> <code>*</code> (permetti tutto)</p>
+                    <p><span class="warning">⚠️ Sicurezza:</span> Attiva solo se ti fidi degli utenti</p>
+                </div>
+
+                <div id="function-allow-external" class="var-item">
+                    <h3>NODE_FUNCTION_ALLOW_EXTERNAL</h3>
+                    <p><strong>Cosa fa:</strong> Permette di usare librerie esterne nel codice</p>
+                    <p><strong>Default:</strong> disabilitato</p>
+                    <p><strong>Quando attivarlo:</strong> Se hai installato librerie aggiuntive e vuoi usarle</p>
+                </div>
+
+                <div id="nodes-exclude" class="var-item">
+                    <h3>NODES_EXCLUDE</h3>
+                    <p><strong>Cosa fa:</strong> Lista di nodi che NON vuoi rendere disponibili</p>
+                    <p><strong>Esempio:</strong> <code>["n8n-nodes-base.executeCommand"]</code></p>
+                    <p><strong>Quando usarlo:</strong> Il nodo "Execute Command" permette di eseguire comandi sul server - bloccalo se hai utenti non fidati</p>
+                </div>
+            </section>
+
+            <section id="limiti" class="var-section">
+                <h2>9. Dimensioni e Limiti</h2>
+
+                <div id="payload-size-max" class="var-item">
+                    <h3>N8N_PAYLOAD_SIZE_MAX</h3>
+                    <p><strong>Cosa fa:</strong> Dimensione massima dei dati che un workflow può gestire (in megabyte)</p>
+                    <p><strong>Default:</strong> 16 MB</p>
+                    <p><strong>Come sceglierlo:</strong></p>
+                    <ul>
+                        <li>Lavori solo con testo/API: lascia <code>16</code></li>
+                        <li>Carichi immagini: <code>64</code></li>
+                        <li>Carichi PDF o video piccoli: <code>128</code></li>
+                        <li>Elabori file grandi: <code>256</code> o più</li>
+                        <li><span class="warning">⚠️</span> Più alto = più RAM usata</li>
+                    </ul>
+                </div>
+
+                <div id="formdata-file-size" class="var-item">
+                    <h3>N8N_FORMDATA_FILE_SIZE_MAX</h3>
+                    <p><strong>Cosa fa:</strong> Dimensione massima file caricati via webhook</p>
+                    <p><strong>Default:</strong> 200 MB</p>
+                    <p><strong>Quando abbassarlo:</strong> Se hai poca RAM o non carichi mai file grossi</p>
+                </div>
+
+                <div id="n8n-metrics" class="var-item">
+                    <h3>N8N_METRICS</h3>
+                    <p><strong>Cosa fa:</strong> Attiva una pagina speciale che mostra statistiche sul funzionamento di n8n</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Quando attivarlo:</strong></p>
+                    <ul>
+                        <li>Se usi strumenti di monitoraggio tipo Grafana/Prometheus</li>
+                        <li>Se vuoi capire come va il server</li>
+                        <li>Se hai più di 10 workflow attivi</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="workflow" class="var-section">
+                <h2>10. Workflow</h2>
+
+                <div id="workflows-default-name" class="var-item">
+                    <h3>WORKFLOWS_DEFAULT_NAME</h3>
+                    <p><strong>Cosa fa:</strong> Nome che appare quando crei un nuovo workflow</p>
+                    <p><strong>Default:</strong> "My workflow"</p>
+                    <p><strong>Consiglio:</strong> Cambialo in qualcosa che ti piace di più</p>
+                </div>
+
+                <div id="workflow-activation-batch" class="var-item">
+                    <h3>N8N_WORKFLOW_ACTIVATION_BATCH_SIZE</h3>
+                    <p><strong>Cosa fa:</strong> Quanti workflow attivare insieme all'avvio di n8n</p>
+                    <p><strong>Default:</strong> 1 (uno alla volta)</p>
+                    <p><strong>Quando aumentarlo:</strong></p>
+                    <ul>
+                        <li>Se hai tanti workflow (più di 20) e l'avvio è lento: metti <code>3</code> o <code>5</code></li>
+                        <li>Server con 8GB+ RAM: metti <code>10</code></li>
+                    </ul>
+                </div>
+
+                <div id="onboarding-disabled" class="var-item">
+                    <h3>N8N_ONBOARDING_FLOW_DISABLED</h3>
+                    <p><strong>Cosa fa:</strong> Nasconde i suggerimenti per principianti</p>
+                    <p><strong>Default:</strong> false (suggerimenti attivi)</p>
+                    <p><strong>Quando disattivarlo:</strong> Se sei esperto e i suggerimenti ti danno fastidio</p>
+                </div>
+
+                <div id="workflow-caller-policy" class="var-item">
+                    <h3>N8N_WORKFLOW_CALLER_POLICY_DEFAULT_OPTION</h3>
+                    <p><strong>Cosa fa:</strong> Chi può far partire un workflow chiamandolo da un altro workflow</p>
+                    <p><strong>Valori:</strong></p>
+                    <ul>
+                        <li><code>workflowsFromSameOwner</code>: solo workflow dello stesso creatore (default)</li>
+                        <li><code>any</code>: chiunque</li>
+                        <li><code>none</code>: nessuno</li>
+                        <li><code>workflowsFromAList</code>: solo quelli in una lista specifica</li>
+                    </ul>
+                    <p><strong>Consiglio:</strong> Lascia <code>workflowsFromSameOwner</code> per sicurezza</p>
+                </div>
+            </section>
+
+            <section id="enterprise" class="var-section">
+                <h2>11. Licenza Enterprise</h2>
+
+                <div id="license-activation-key" class="var-item">
+                    <h3>N8N_LICENSE_ACTIVATION_KEY</h3>
+                    <p><strong>Cosa fa:</strong> Il codice della tua licenza enterprise</p>
+                    <p><strong>Quando serve:</strong> Solo se hai comprato funzionalità avanzate</p>
+                </div>
+
+                <div id="license-auto-renew" class="var-item">
+                    <h3>N8N_LICENSE_AUTO_RENEW_ENABLED</h3>
+                    <p><strong>Cosa fa:</strong> Rinnova automaticamente la licenza ogni tot giorni</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Consiglio:</strong> Lascia <code>true</code> per non doverti ricordare di rinnovare manualmente</p>
+                </div>
+
+                <div id="license-detach" class="var-item">
+                    <h3>N8N_LICENSE_DETACH_FLOATING_ON_SHUTDOWN</h3>
+                    <p><strong>Cosa fa:</strong> Rilascia la licenza quando spegni n8n (per poterla usare altrove)</p>
+                    <p><strong>Default:</strong> true</p>
+                    <p><strong>Quando metterlo false:</strong> Se questo è il tuo server principale e deve sempre avere la licenza</p>
+                </div>
+            </section>
+
+            <section id="queue-mode" class="var-section">
+                <h2>12. Modalità Avanzata (Queue Mode)</h2>
+
+                <div id="executions-mode" class="var-item">
+                    <h3>EXECUTIONS_MODE</h3>
+                    <p><span class="warning">⚠️ Attenzione:</span> Questa modalità è per server potenti con utenti esperti. Non attivarla se stai iniziando.</p>
+                    <p><strong>Cosa fa:</strong> Come n8n gestisce l'esecuzione dei workflow</p>
+                    <p><strong>Valori:</strong> <code>regular</code> (normale) o <code>queue</code> (avanzata con Redis)</p>
+                    <p><strong>Default:</strong> regular</p>
+                    <p><strong>Quando usare queue:</strong></p>
+                    <ul>
+                        <li>Server con 4GB+ RAM</li>
+                        <li>Hai workflow che durano più di 5 minuti</li>
+                        <li>Hai più di 50 esecuzioni al giorno</li>
+                        <li>N8n si blocca spesso</li>
+                        <li><span class="warning">⚠️</span> Richiede installare e configurare Redis (database aggiuntivo)</li>
+                    </ul>
+                </div>
+
+                <div id="redis-host" class="var-item">
+                    <h3>QUEUE_BULL_REDIS_HOST</h3>
+                    <p><strong>Cosa fa:</strong> Dove si trova Redis (solo se usi Queue Mode)</p>
+                    <p><strong>Esempio:</strong> <code>localhost</code> o <code>redis.miosito.com</code></p>
+                </div>
+
+                <div id="redis-port" class="var-item">
+                    <h3>QUEUE_BULL_REDIS_PORT</h3>
+                    <p><strong>Cosa fa:</strong> Porta di Redis (solo se usi Queue Mode)</p>
+                    <p><strong>Default:</strong> 6379</p>
+                </div>
+
+                <div id="redis-password" class="var-item">
+                    <h3>QUEUE_BULL_REDIS_PASSWORD</h3>
+                    <p><strong>Cosa fa:</strong> Password per accedere a Redis (solo se usi Queue Mode)</p>
+                    <p><strong>Consiglio:</strong> Metti sempre una password forte!</p>
+                </div>
+
+                <div id="offload-manual" class="var-item">
+                    <h3>OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS</h3>
+                    <p><strong>Cosa fa:</strong> Anche i workflow avviati manualmente usano il sistema avanzato (solo se usi Queue Mode)</p>
+                    <p><strong>Default:</strong> false</p>
+                    <p><strong>Quando attivarlo:</strong> Se hai worker configurati e vuoi più affidabilità</p>
+                </div>
+            </section>
+
+            <section id="config-examples" class="var-section configs">
+                <h2>13. Esempi di Configurazione</h2>
+
+                <h3>Server Piccolo (2GB RAM, 1-2 CPU)</h3>
+                <pre>EXECUTIONS_TIMEOUT=3600
+EXECUTIONS_DATA_MAX_AGE=336
+N8N_PAYLOAD_SIZE_MAX=32
+DB_TYPE=postgresdb
+DB_POSTGRESDB_POOL_SIZE=2
+N8N_CONCURRENCY_PRODUCTION_LIMIT=2</pre>
+
+                <h3>Server Medio (4GB RAM, 2-4 CPU)</h3>
+                <pre>EXECUTIONS_TIMEOUT=7200
+EXECUTIONS_DATA_MAX_AGE=720
+N8N_PAYLOAD_SIZE_MAX=64
+DB_POSTGRESDB_POOL_SIZE=4
+N8N_CONCURRENCY_PRODUCTION_LIMIT=5</pre>
+
+                <h3>Server Grande (8GB+ RAM, 4+ CPU)</h3>
+                <pre>EXECUTIONS_TIMEOUT=14400
+EXECUTIONS_DATA_MAX_AGE=2160
+N8N_PAYLOAD_SIZE_MAX=128
+DB_POSTGRESDB_POOL_SIZE=8
+N8N_CONCURRENCY_PRODUCTION_LIMIT=10</pre>
+
+                <h3>Massima Sicurezza</h3>
+                <pre>N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+N8N_BLOCK_FILE_ACCESS_TO_N8N_FILES=true
+N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+N8N_COMMUNITY_PACKAGES_ENABLED=false
+N8N_UNVERIFIED_PACKAGES_ENABLED=false
+NODES_EXCLUDE=["n8n-nodes-base.executeCommand"]</pre>
+
+                <h3>Massime Prestazioni</h3>
+                <pre>EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+EXECUTIONS_DATA_SAVE_ON_PROGRESS=false
+N8N_DIAGNOSTICS_ENABLED=false
+N8N_BLOCK_ENV_ACCESS_IN_NODE=false</pre>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
